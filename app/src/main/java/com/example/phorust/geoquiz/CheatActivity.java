@@ -38,6 +38,7 @@ public class CheatActivity extends Activity {
 
     public final String KEY_ANSWER = "answer";
     public final String KEY_TOKEN_USED_COUNT = "used_tokens";
+    public final String KEY_HINT_USED = "hint_used";
     private int mTokenUsedCount;
     private boolean mAnswerIsTrue;
     private boolean mQuestionHintUsed;
@@ -57,15 +58,18 @@ public class CheatActivity extends Activity {
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_SHOWN, false);
 
-        setAnswerShownResult(false, mTokenUsedCount);
 
         if (savedInstanceState != null) {
             mAnswerIsTrue = savedInstanceState.getBoolean(KEY_ANSWER, false);
             mTokenUsedCount = savedInstanceState.getInt(KEY_TOKEN_USED_COUNT, 0);
+            mQuestionHintUsed = savedInstanceState.getBoolean(KEY_HINT_USED,false);
         } else {
             mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
             mTokenUsedCount = getIntent().getIntExtra(EXTRA_TOKEN_USED_COUNT, 0);
+            mQuestionHintUsed = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_SHOWN, false);
         }
+
+        setAnswerShownResult(mQuestionHintUsed, mTokenUsedCount);
 
         hint_button_show.setOnClickListener(new View.OnClickListener() {
             @Override
