@@ -61,7 +61,9 @@ public class CheatActivity extends Activity {
         if (mTokenUsedCount > 0) {
             for (int i = 0; i < tokenUsedCount; i++) {
                 //i = (i == 0 ? i = 2 : 3 - i);
-                (tokenList.get(i)).setVisibility(View.INVISIBLE);
+                //(tokenList.get(i)).getBackground().setAlpha(128);
+                (tokenList.get(i)).setAlpha(128);
+                //(tokenList.get(i)).setVisibility(View.INVISIBLE);
             }
         }
     }
