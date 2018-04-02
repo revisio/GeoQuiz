@@ -25,17 +25,20 @@
             <ImageView
                 android:id="@+id/token1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_border_black_18dp"/>
 
             <ImageView
                 android:id="@+id/token2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_border_black_18dp"/>
 
             <ImageView
                 android:id="@+id/token3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_border_black_18dp"/>
 
         </LinearLayout>
     </LinearLayout>

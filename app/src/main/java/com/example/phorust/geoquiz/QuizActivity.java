@@ -25,7 +25,7 @@ public class QuizActivity extends AppCompatActivity {
     private final String KEY_USED_HINT = "used_hint";
     private final String KEY_TOKEN_USED_COUNT = "token_counter";
 
-    private boolean[] testthis = new boolean[]{
+    private boolean[] mUsedHintPreviously = new boolean[]{
             false,
             false,
             false,
@@ -45,7 +45,7 @@ public class QuizActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
         savedInstanceState.putInt(KEY_TOKEN_USED_COUNT,mTokenUsedCount);
         //savedInstanceState.putBoolean(KEY_USED_HINT,mUsedCheat);
-        savedInstanceState.putBooleanArray(KEY_USED_HINT, testthis);
+        savedInstanceState.putBooleanArray(KEY_USED_HINT, mUsedHintPreviously);
     }
 
     @Override
@@ -54,8 +54,9 @@ public class QuizActivity extends AppCompatActivity {
             return;
         }
         mUsedCheat = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN, false);
+        mTokenUsedCount = data.getIntExtra(CheatActivity.EXTRA_TOKEN_USED_COUNT, 0);
         mQuestionBank[mCurrentIndex].setUsedHint(mUsedCheat);
-        testthis[mCurrentIndex] = mUsedCheat;
+        mUsedHintPreviously[mCurrentIndex] = mUsedCheat;
 
     }
 
@@ -67,7 +68,7 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue){
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
         int messageID;
-        if (!mQuestionBank[mCurrentIndex].isUsedHint() && !testthis[mCurrentIndex]) {
+        if (!mQuestionBank[mCurrentIndex].isUsedHint() && !mUsedHintPreviously[mCurrentIndex]) {
             if (userPressedTrue == answerIsTrue) {
                 messageID = R.string.correct_toast;
             } else {
@@ -75,7 +76,7 @@ public class QuizActivity extends AppCompatActivity {
             }
             Toast.makeText(QuizActivity.this, messageID, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(QuizActivity.this, "You cheated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(QuizActivity.this, "You used a hint!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -88,7 +89,7 @@ public class QuizActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX,0);
             mTokenUsedCount = savedInstanceState.getInt(KEY_TOKEN_USED_COUNT,0);
-            testthis = savedInstanceState.getBooleanArray(KEY_USED_HINT);
+            mUsedHintPreviously = savedInstanceState.getBooleanArray(KEY_USED_HINT);
             //mUsedCheat = savedInstanceState.getBoolean(KEY_USED_HINT,false);
         }
 
@@ -129,7 +130,7 @@ public class QuizActivity extends AppCompatActivity {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
                 i.putExtra(CheatActivity.EXTRA_TOKEN_USED_COUNT, mTokenUsedCount);
-                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN,mUsedCheat);
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN,mUsedHintPreviously[mCurrentIndex]);
                 startActivityForResult(i,0);
             }
         });

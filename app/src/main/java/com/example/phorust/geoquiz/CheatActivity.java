@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,9 +43,11 @@ public class CheatActivity extends Activity {
     public final String KEY_ANSWER = "answer";
     public final String KEY_TOKEN_USED_COUNT = "used_tokens";
     public final String KEY_HINT_USED = "hint_used";
+    public final String KEY_SAME_QUESTION = "same_question";
     private int mTokenUsedCount;
     private boolean mAnswerIsTrue;
     private boolean mQuestionHintUsed;
+    private boolean sameQuestion;
 
     private void setAnswerShownResult(boolean isAnswerShown, int tokenUsedCount) {
         Intent data = new Intent();
@@ -50,26 +56,45 @@ public class CheatActivity extends Activity {
         setResult(RESULT_OK, data);
     }
 
+    private void updateTokenDisplay(int tokenUsedCount){
+        List<ImageView> tokenList = Arrays.asList(token3_image_view,token2_image_view,token1_image_view);
+        if (mTokenUsedCount > 0) {
+            for (int i = 0; i < tokenUsedCount; i++) {
+                //i = (i == 0 ? i = 2 : 3 - i);
+                (tokenList.get(i)).setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(KEY_TOKEN_USED_COUNT, mTokenUsedCount);
+        savedInstanceState.putBoolean(KEY_ANSWER, mAnswerIsTrue);
+        savedInstanceState.putBoolean(KEY_HINT_USED, mQuestionHintUsed);
+
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
         ButterKnife.bind(this);
 
-        mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_SHOWN, false);
-
-
         if (savedInstanceState != null) {
             mAnswerIsTrue = savedInstanceState.getBoolean(KEY_ANSWER, false);
             mTokenUsedCount = savedInstanceState.getInt(KEY_TOKEN_USED_COUNT, 0);
             mQuestionHintUsed = savedInstanceState.getBoolean(KEY_HINT_USED,false);
+            sameQuestion = mQuestionHintUsed;
         } else {
             mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
             mTokenUsedCount = getIntent().getIntExtra(EXTRA_TOKEN_USED_COUNT, 0);
             mQuestionHintUsed = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_SHOWN, false);
+            sameQuestion = mQuestionHintUsed;
         }
 
         setAnswerShownResult(mQuestionHintUsed, mTokenUsedCount);
+        updateTokenDisplay(mTokenUsedCount);
 
         hint_button_show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +106,16 @@ public class CheatActivity extends Activity {
                         show_answer_text_view.setText(R.string.false_button);
                     }
 
+                    if (!sameQuestion){
+                        mTokenUsedCount++;
+                    }
+
                     setAnswerShownResult(true, mTokenUsedCount);
+                    updateTokenDisplay(mTokenUsedCount);
+                    sameQuestion = true;
+                    
+                } else {
+                    Toast.makeText(CheatActivity.this,"Sorry, you are out of tokens!",Toast.LENGTH_SHORT).show();
                 }
             }
         });
